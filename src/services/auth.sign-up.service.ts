@@ -6,9 +6,9 @@ import { prisma } from '../../prisma/prismaClient';
 // This is the functionality that checks if exists the user account in the database
 async function findUserByEmail(data: string) {
 
-    const operationResult = await prisma.findFirstOrThrow({
+    const operationResult = await prisma.users.findFirstOrThrow({
         where: {
-            userEmail: data
+            email: data
         }
     });
 
@@ -22,11 +22,15 @@ async function createAccount(data: userCredentials): Promise<createdUser> {
 
     // Creating an user register in the database
     const resultOperation = await prisma.users.create({
-        data: data,
+        data: {
+            email: data.userEmail,
+            name: data.userName,
+            password: data.userPassword
+        },
         select: {
-            userName: true,
-            userEmail: true,
-            userPassword: true
+            name: true,
+            email: true,
+            password: true
         }
     });
 

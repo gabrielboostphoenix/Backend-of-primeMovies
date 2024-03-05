@@ -1,8 +1,8 @@
 // This is the created user type
 interface createdUser {
-    userName: string,
-    userEmail: string,
-    userPassword: string
+    name: string,
+    email: string,
+    password: string
 }
 
 // Exporting Area
