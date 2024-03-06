@@ -1,7 +1,8 @@
 // Importing Area
 import { Router } from 'express';
-/*
 import { SignUpController } from './controllers/auth.sign-up.controller';
+
+/*
 import {  } from './controllers/auth.sign-in.controller';
 import { UserCredentialsHandlingController } from './controllers/auth.handle.controller';
 import { checkIfTheUserIsAuthenticated } from './middleware/isAuthenticated';
@@ -10,11 +11,11 @@ import { checkIfTheUserIsAuthenticated } from './middleware/isAuthenticated';
 // Declaring the constant that will be used to run the router
 const router = Router();
 
-/*
 // Declaring the routes to do the authentication system works
 // That's the sign-up route where the user can create your own account
 router.post('/signup', new SignUpController().signUp);
 
+/*
 // That's the sign-in route where the user can login in your own account
 router.post('/signin', checkIfTheUserIsAuthenticated, new );
 

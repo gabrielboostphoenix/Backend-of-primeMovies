@@ -40,4 +40,4 @@ async function createAccount(data: userCredentials): Promise<createdUser> {
 };
 
 // Exporting Area
-export { createAccount };
+export { createAccount, findUserByEmail };
