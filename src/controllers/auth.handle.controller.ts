@@ -7,14 +7,14 @@ import {  } from '../services/auth.handle.service';
 // That's a handling class of user credentials
 class UserCredentialsHandlingController {
 
-    // This method changes the user password
+    // This method changes the user account password
     async changePassword(req: any, res: Response) {
 
 
 
     };
 
-    // This method changes the user name
+    // This method changes the user account name
     async changeName(req: any, res: Response) {
 
 

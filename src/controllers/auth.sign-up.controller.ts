@@ -1,12 +1,13 @@
 // Importing Area
 import { createAccount, findUserByEmail } from '../services/auth.sign-up.service';
-import { userCredentials } from '../types/userCredentials';
+import { hash } from 'bcryptjs';
+import { signUp } from '../types/signUp';
 
 // That's a sign up class
 class SignUpController {
 
-    // This method create an user account
-    async signUp(req: userCredentials, res: any) {
+    // This method creates an user account
+    async signUp(req: signUp, res: any) {
 
         // Extracting informations from the request
         const { userName, userEmail, userPassword } = req.body;
@@ -25,27 +26,36 @@ class SignUpController {
         // Verifying whether the e-mail is been used for another user account
         const checkingIfEmailAlreadyIsBeenUsed = await findUserByEmail(userEmail);
 
-        // Checking the data type of response
-        if (checkingIfEmailAlreadyIsBeenUsed) {
+        // Checking the data type of operation result
+        if (checkingIfEmailAlreadyIsBeenUsed !== null) {
 
-            // Instancing an error
-            const error = new Error('This e-mail already is been used, try to use another!');
+            // Creating a new error to send like a response to the user
+            const error = new Error('This e-mail already is been used, try to use another to sign-up!');
             // Returning an error response
             return res.status(409).json({
                 statusCode: 409,
                 errorMessage: error.message
             });
 
-        } else {
-
-            return 'E-mail válido!';
-
         }
 
-        // Creating an user account
-        const result = await createAccount(req.body);
-        // Returning a success response
-        return result;
+        // Extrating the salt number of cryptography
+        const salt = process.env.SALT ? Number(process.env.SALT) : '';
+        // Using a cryptography function to hash the user password
+        const hashedPassword = await hash(userPassword, salt);
+        // Adding the current user in database
+        const result = createAccount({
+            userName: userName,
+            userEmail: userEmail,
+            userPassword: hashedPassword
+        });
+
+        // Returning the operation result with a created user successfully response
+        return res.status(201).json({
+            statusCode: 201,
+            successMessage: 'Your own user account was created with successfully!',
+            result: result
+        });
 
     };
 

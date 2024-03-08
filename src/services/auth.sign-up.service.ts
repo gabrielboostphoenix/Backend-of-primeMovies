@@ -1,12 +1,13 @@
 // Importing Area
 import { userCredentials } from '../types/userCredentials';
 import { createdUser } from '../types/createdUser';
+import { foundUser } from '../types/foundUser';
 import { prisma } from '../../prisma/prismaClient';
 
 // This is the functionality that checks if exists the user account in the database
-async function findUserByEmail(data: string) {
+async function findUserByEmail(data: string): Promise<foundUser | null> {
 
-    const operationResult = await prisma.users.findFirstOrThrow({
+    const operationResult = await prisma.users.findFirst({
         where: {
             email: data
         }

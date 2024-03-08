@@ -1,8 +1,5 @@
-// Importing Area
-import { Request } from 'express';
-
 // This is the user credentials type
-interface userCredentials extends Request {
+interface userCredentials {
     userName: string,
     userEmail: string,
     userPassword: string
