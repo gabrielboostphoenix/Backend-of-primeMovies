@@ -1,5 +1,5 @@
 // Importing Area
-import { createAccount, findUserByEmail } from '../services/auth.sign-up.service';
+import { createUserAccount, findUserAccountByEmail } from '../services/auth.sign-up.service';
 import { hash } from 'bcryptjs';
 import { signUp } from '../types/signUp';
 
@@ -9,7 +9,7 @@ class SignUpController {
     // This method creates an user account
     async signUp(req: signUp, res: any) {
 
-        // Extracting informations from the request
+        // Extracting the informations from the request
         const { userName, userEmail, userPassword } = req.body;
         
         // Checking if the credentials are missing in the request
@@ -24,7 +24,7 @@ class SignUpController {
         }
 
         // Verifying whether the e-mail is been used for another user account
-        const checkingIfEmailAlreadyIsBeenUsed = await findUserByEmail(userEmail);
+        const checkingIfEmailAlreadyIsBeenUsed = await findUserAccountByEmail(userEmail);
 
         // Checking the data type of operation result
         if (checkingIfEmailAlreadyIsBeenUsed !== null) {
@@ -44,7 +44,7 @@ class SignUpController {
         // Using a cryptography function to hash the user password
         const hashedPassword = await hash(userPassword, salt);
         // Adding the current user in database
-        const result = createAccount({
+        const result = await createUserAccount({
             userName: userName,
             userEmail: userEmail,
             userPassword: hashedPassword
@@ -54,7 +54,7 @@ class SignUpController {
         return res.status(201).json({
             statusCode: 201,
             successMessage: 'Your own user account was created with successfully!',
-            result: result
+            operationResult: result
         });
 
     };

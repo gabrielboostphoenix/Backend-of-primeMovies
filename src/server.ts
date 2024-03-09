@@ -14,6 +14,6 @@ server.use(cors());
 server.use(router);
 
 // Server listening on specific port 
-server.listen(3000, () => {
+server.listen(port, () => {
     console.log(`Server Online, The application is running on port ${port}!`);
 });

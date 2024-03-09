@@ -1,12 +1,13 @@
 // Importing Area
 import { userCredentials } from '../types/userCredentials';
-import { createdUser } from '../types/createdUser';
 import { foundUser } from '../types/foundUser';
+import { createdUser } from '../types/createdUser';
 import { prisma } from '../../prisma/prismaClient';
 
-// This is the functionality that checks if exists the user account in the database
-async function findUserByEmail(data: string): Promise<foundUser | null> {
+// That's a functionality that checks if exists the user account in the database
+async function findUserAccountByEmail(data: string): Promise<foundUser | null> {
 
+    // Finding an user account register through the e-mail
     const operationResult = await prisma.users.findFirst({
         where: {
             email: data
@@ -19,7 +20,7 @@ async function findUserByEmail(data: string): Promise<foundUser | null> {
 };
 
 // This is the functionality that creates an account to the user in the database
-async function createAccount(data: userCredentials): Promise<createdUser> {
+async function createUserAccount(data: userCredentials): Promise<createdUser> {
 
     // Creating an user register in the database
     const resultOperation = await prisma.users.create({
@@ -41,4 +42,4 @@ async function createAccount(data: userCredentials): Promise<createdUser> {
 };
 
 // Exporting Area
-export { createAccount, findUserByEmail };
+export { createUserAccount, findUserAccountByEmail };
