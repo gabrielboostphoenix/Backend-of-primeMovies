@@ -1,6 +1,6 @@
 // Importing Area
 import { signIn } from '../types/signIn';
-import { findUserAccountByEmailCredential, verifyThePasswords } from '../services/auth.sign-in.service';
+import { findUserAccountByEmailCredential, verifyThePasswords, generateAccessToken } from '../services/auth.sign-in.service';
 
 // That's a sign-in class
 class SignInController {
@@ -50,10 +50,17 @@ class SignInController {
 
         }
 
+        // Generating a JWT where isn't necessary to log-in the next time
+        const accessWebToken = await generateAccessToken({
+            email: userEmail,
+            password: userPassword
+        });
+
         // Returning a successfully response
         return res.status(200).json({
             statusCode: 200,
-            successMessage: "Congratulations! The client was loged with successfully in the user account."
+            successMessage: "Congratulations! The client was loged with successfully in the user account.",
+            accessToken: accessWebToken
         });
 
     }
