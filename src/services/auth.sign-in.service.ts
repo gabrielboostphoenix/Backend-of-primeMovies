@@ -6,7 +6,7 @@ import { payload } from '../types/payload';
 import { sign } from 'jsonwebtoken';
 
 // That's a functionality that checks if exists an user account
-async function findUserAccountByEmailCredential(data: string): Promise<foundUser | null> {
+async function findUserAccountByEmailCredential(data: string): Promise <foundUser | null> {
 
     // Finding an user account register by unique credential
     const operationResult = await prisma.users.findUnique({

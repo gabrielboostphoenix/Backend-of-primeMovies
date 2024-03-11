@@ -12,7 +12,7 @@ const router = Router();
 
 // Declaring the routes to do the authentication system works
 // That's the sign-up route where the user can create your own account
-router.post('/signup', new SignUpController().signUp);
+router.post('/signup', checkIfTheUserIsAuthenticated, new SignUpController().signUp);
 
 // That's the sign-in route where the user can login in your own account
 router.post('/signin', checkIfTheUserIsAuthenticated, new SignInController().signIn);

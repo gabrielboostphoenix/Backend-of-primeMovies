@@ -1,21 +1,43 @@
 // Importing Area
-import { Request, Response, NextFunction } from 'express';
-import { JwtPayload, verify } from 'jsonwebtoken';
+import { Response, NextFunction } from 'express';
+import { verify } from 'jsonwebtoken';
+import { signIn } from '../types/signIn';
+import { authorized } from '../types/authorized';
+import { unauthorized } from '../types/unauthorized';
 
 // This is a feature that verifies if the access token is valid
-const verifyAccessToken = async (token: string): Promise<string | JwtPayload> => {
+const verifyAccessToken = async (token: string): Promise <authorized | unauthorized> => {
 
     // Extracting the API secret information from enviorment variable
     const ApiSecret: string = process.env.API_SECRET ? process.env.API_SECRET : '';
-    // Verifying if the JWT is valid
-    const operationResult = verify(token, ApiSecret);
-    // Returning the operation result
-    return operationResult;
+
+    // That's a structure that verifies if the token is really valid
+    try {
+
+        // Verifing it
+        const decodedJWT = verify(token, ApiSecret);
+        // Returning it
+        return {
+            success: true,
+            data: decodedJWT
+        };
+
+    } catch (error) {
+
+        // Creating an error object to return it
+        const invalidJWT = new Error("That's an invalid json web token!");
+        // Returning it
+        return {
+            success: false,
+            errorMessage: invalidJWT
+        };
+
+    }
 
 };
 
 // That's a middleware that checks if exists the JWT in the request
-const checkIfTheUserIsAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
+const checkIfTheUserIsAuthenticated = async (req: signIn, res: Response, next: NextFunction) => {
 
     // Getting all of the authorization informations from request header
     const authHeader = req.headers.authorization;
@@ -25,8 +47,15 @@ const checkIfTheUserIsAuthenticated = async (req: Request, res: Response, next: 
 
         // Extracting the access json web token
         const accessToken = authHeader.split(' ')[1];
+        // Verifing whether the jwt is valid
+        const result = await verifyAccessToken(accessToken);
+        // Putting the verification result in the request
+        req.jwtAuthorization = result;
 
     }
+
+    // Skipping to the next
+    next();
 
 };
 

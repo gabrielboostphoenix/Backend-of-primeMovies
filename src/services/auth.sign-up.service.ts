@@ -5,7 +5,7 @@ import { createdUser } from '../types/createdUser';
 import { prisma } from '../../prisma/prismaClient';
 
 // That's a functionality that checks if exists the user account in the database
-async function findUserAccountByEmail(data: string): Promise<foundUser | null> {
+async function findUserAccountByEmail(data: string): Promise <foundUser | null> {
 
     // Finding an user account register through the e-mail
     const operationResult = await prisma.users.findFirst({
@@ -20,7 +20,7 @@ async function findUserAccountByEmail(data: string): Promise<foundUser | null> {
 };
 
 // This is the functionality that creates an account to the user in the database
-async function createUserAccount(data: userCredentials): Promise<createdUser> {
+async function createUserAccount(data: userCredentials): Promise <createdUser> {
 
     // Creating an user register in the database
     const resultOperation = await prisma.users.create({
