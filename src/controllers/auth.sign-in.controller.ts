@@ -13,14 +13,10 @@ class SignInController {
         if (req.jwtAuthorization?.success === true) {
 
             // In this case the user has authorization to access the service
-            // Extracting the access token (JWT) in the request
-            const jwt = req.jwtAuthorization.data;
-
             // Returning a successfully response
             return res.status(200).json({
                 statusCode: 200,
-                successMessage: "Congratulations! The client was loged with successfully in the user account.",
-                accessToken: jwt
+                successMessage: "Congratulations! The client was loged with successfully in the user account."
             });
 
         } else {
