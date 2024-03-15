@@ -1,6 +1,6 @@
 // Importing Area
 import { Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import { JwtPayload, verify } from 'jsonwebtoken';
 import { middlewareRequest } from '../types/middlewareRequest';
 import { authorized } from '../types/authorized';
 import { unauthorized } from '../types/unauthorized';
@@ -15,7 +15,7 @@ const verifyAccessToken = async (token: string): Promise <authorized | unauthori
     try {
 
         // Verifing it
-        const decodedJWT = verify(token, ApiSecret);
+        const decodedJWT = verify(token, ApiSecret) as JwtPayload;
         // Returning it
         return {
             success: true,

@@ -2,6 +2,7 @@
 import { Response } from 'express';
 import { credentialsUpdating } from '../types/credentialsUpdating';
 import { changeName, changePassword } from '../services/auth.handle.service';
+import { generateAccessToken } from '../services/auth.sign-in.service';
 
 // That's a handling class of user credentials
 class UserCredentialsHandlingController {
@@ -12,36 +13,59 @@ class UserCredentialsHandlingController {
         // Checking for an existing JWT
         if (req.jwtAuthorization?.success === true) {
 
-            // In this case the user has authorization to access the service
-            // Extracting the password information from the request
-            const { userPassword } = req.body;
+            // Extracting the user credentials from JWT
+            const { email, password } = req.jwtAuthorization.data;
 
-            // Checking if the credential is missing in the request
-            if (userPassword === "") {
+            // Verifing if there are properties like e-mail and password in the token
+            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
 
+                // In this case the user has authorization to access the service
+                // Extracting the password information from the request
+                const { userPassword } = req.body;
+
+                // Checking if the credential is missing in the request
+                if (userPassword === "") {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! The user password information is missing."
+                    });
+
+                }
+
+                // Changing the user password of your own account
+                const operationResult = await changePassword(email, userPassword);
+
+                // Generating a new JSON Web Token relative to the new user credentials
+                const newAccessToken = await generateAccessToken({
+                    email: operationResult.email,
+                    password: operationResult.password
+                });
+
+                // Returning a successfully response
+                return res.status(200).json({
+                    statusCode: 200,
+                    successMessage: "Congratulations! The user password was changed of your own account.",
+                    result: operationResult,
+                    newJWT: newAccessToken
+                });
+
+            } else {
+
+                // In this case the user doesn't have authorization to access the service
+                // It's because was send an invalid JWT where is missing some properties
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! The user password information is missing."
+                    errorMessage: "Bad Request! It's not possible to change some user credential bacause the JWT is invalid."
                 });
 
             }
 
-            // Extracting the user e-mail credential from JWT
-            const { email } = req.jwtAuthorization.data;
-            // Changing the user password of your own account
-            const operationResult = changePassword(email, userPassword);
-
-            // Returning a successfully response
-            return res.status(200).json({
-                statusCode: 200,
-                successMessage: "Congratulations! The user password was changed of your own account.",
-                result: operationResult
-            });
-
         } else {
             
-            // In this case the user doesn't authorization to access the service
+            // In this case the user doesn't have the authorization to access the service
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
@@ -58,36 +82,51 @@ class UserCredentialsHandlingController {
         // Checking for an existing JWT
         if (req.jwtAuthorization?.success === true) {
 
-            // In this case the user has authorization to access the service
-            // Extracting the user name information from the request
-            const { userName } = req.body;
+            // Extracting the user credentials from JWT
+            const { email, password } = req.jwtAuthorization.data;
 
-            // Checking if the credential is missing in the request
-            if (userName === "") {
+            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
 
+                // In this case the user has authorization to access the service
+                // Extracting the user name information from the request
+                const { userName } = req.body;
+
+                // Checking if the credential is missing in the request
+                if (userName === "") {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! The user name information is missing."
+                    });
+
+                }
+
+                // Changing the user name of your own account
+                const operationResult = await changeName(email, userName);
+
+                // Returning a successfully response
+                return res.status(200).json({
+                    statusCode: 200,
+                    successMessage: "Congratulations! The user name was changed of your own account.",
+                    result: operationResult
+                });
+
+            } else {
+
+                // In this case the user doesn't have authorization to access the service
+                // It's because was send an invalid JWT where is missing some properties
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! The user name information is missing."
+                    errorMessage: "Bad Request! It's not possible to change some user credential bacause the JWT is invalid."
                 });
 
             }
 
-            // Extracting the user e-mail credential from JWT
-            const { email } = req.jwtAuthorization.data;
-            // Changing the user name of your own account
-            const operationResult = changeName(email, userName);
-
-            // Returning a successfully response
-            return res.status(200).json({
-                statusCode: 200,
-                successMessage: "Congratulations! The user name was changed of your own account.",
-                result: operationResult
-            });
-
         } else {
 
-            // In this case the user doesn't authorization to access the service
+            // In this case the user doesn't have the authorization to access the service
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,

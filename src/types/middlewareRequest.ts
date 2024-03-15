@@ -1,14 +1,13 @@
 // Importing Area
 import { Request } from 'express';
-import { authorized } from './authorized';
-import { unauthorized } from './unauthorized';
+import { JwtPayload } from 'jsonwebtoken';
 
 // That's a middleware request's type
 interface middlewareRequest extends Request {
     userName?: string,
     userEmail?: string,
     userPassword?: string,
-    jwtAuthorization?: authorized | unauthorized
+    jwtAuthorization?: string | JwtPayload
 }
 
 // Exporting Area

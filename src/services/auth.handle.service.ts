@@ -28,7 +28,7 @@ async function changeName(userEmail: string, userName: string) {
             email: userEmail
         },
         data: {
-            email: userName
+            name: userName
         }
     });
 
