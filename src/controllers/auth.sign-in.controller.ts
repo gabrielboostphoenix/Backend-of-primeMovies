@@ -12,12 +12,48 @@ class SignInController {
         // Checking for an existing JWT
         if (req.jwtAuthorization?.success === true) {
 
-            // In this case the user has authorization to access the service
-            // Returning a successfully response
-            return res.status(200).json({
-                statusCode: 200,
-                successMessage: "Congratulations! The client was loged with successfully in the user account."
-            });
+            // Extracting the user credentials from JWT
+            const { email, password } = req.jwtAuthorization.data;
+
+            // Verifing if there are properties like e-mail and password in the token
+            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+
+                // Searching for the user in the database with your respective received credentials
+                const specificUser = await findUserAccountByEmailCredential(email);
+
+                // Checking if exists the specific user through the data type
+                if (specificUser === null) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to log-in the user account bacause the JWT is invalid."
+                    });
+
+                }
+
+                // Checking if the received password credential from the request is correct
+                const comparedPasswords = await verifyThePasswords(password, specificUser.password);
+
+                // Checking the returned operation result
+                if (!comparedPasswords) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to log-in the user account bacause the JWT is invalid."
+                    });
+
+                }
+
+                // In this case the user has authorization to access the service
+                // Returning a successfully response
+                return res.status(200).json({
+                    statusCode: 200,
+                    successMessage: "Congratulations! The client was loged with successfully in the user account."
+                });
+
+            }
 
         } else {
 
