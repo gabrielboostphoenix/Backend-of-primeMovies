@@ -2,7 +2,7 @@
 import { Response } from 'express';
 import { credentialsUpdating } from '../types/credentialsUpdating';
 import { changeName, changePassword } from '../services/auth.handle.service';
-import { generateAccessToken } from '../services/auth.sign-in.service';
+import { findUserAccountByEmailCredential, generateAccessToken, verifyThePasswords } from '../services/auth.sign-in.service';
 
 // That's a handling class of user credentials
 class UserCredentialsHandlingController {
@@ -18,6 +18,34 @@ class UserCredentialsHandlingController {
 
             // Verifing if there are properties like e-mail and password in the token
             if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+
+                // Searching for the user in the database with your respective received credentials
+                const specificUser = await findUserAccountByEmailCredential(email);
+
+                // Checking if exists the specific user through the data type
+                if (specificUser === null) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to change the user password bacause the JWT is invalid."
+                    });
+
+                }
+
+                // Checking if the received password credential from the request is correct
+                const comparedPasswords = await verifyThePasswords(password, specificUser.password);
+
+                // Checking the returned operation result
+                if (!comparedPasswords) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to change the user password bacause the JWT is invalid."
+                    });
+
+                }
 
                 // In this case the user has authorization to access the service
                 // Extracting the password information from the request
@@ -58,7 +86,7 @@ class UserCredentialsHandlingController {
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! It's not possible to change some user credential bacause the JWT is invalid."
+                    errorMessage: "Bad Request! It's not possible to change the user password bacause the JWT is invalid."
                 });
 
             }
@@ -69,7 +97,7 @@ class UserCredentialsHandlingController {
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
-                errorMessage: "Unauthorized Request! It's not possible to change some user credential bacause the JWT is invalid."
+                errorMessage: "Unauthorized Request! It's not possible to change the user password bacause the JWT is missing."
             });
             
         }
@@ -85,7 +113,36 @@ class UserCredentialsHandlingController {
             // Extracting the user credentials from JWT
             const { email, password } = req.jwtAuthorization.data;
 
+            // Checking if the user credentials are invalid through the data type
             if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+
+                // Searching for the user in the database with your respective received credentials
+                const specificUser = await findUserAccountByEmailCredential(email);
+
+                // Checking if exists the specific user through the data type
+                if (specificUser === null) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to change the user name bacause the JWT is invalid."
+                    });
+
+                }
+
+                // Checking if the received password credential from the request is correct
+                const comparedPasswords = await verifyThePasswords(password, specificUser.password);
+
+                // Checking the returned operation result
+                if (!comparedPasswords) {
+
+                    // Returning an error response
+                    return res.status(400).json({
+                        statusCode: 400,
+                        errorMessage: "Bad Request! It's not possible to change the user name bacause the JWT is invalid."
+                    });
+
+                }
 
                 // In this case the user has authorization to access the service
                 // Extracting the user name information from the request
@@ -97,7 +154,7 @@ class UserCredentialsHandlingController {
                     // Returning an error response
                     return res.status(400).json({
                         statusCode: 400,
-                        errorMessage: "Bad Request! The user name information is missing."
+                        errorMessage: "Bad Request! The username information is missing."
                     });
 
                 }
@@ -119,7 +176,7 @@ class UserCredentialsHandlingController {
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! It's not possible to change some user credential bacause the JWT is invalid."
+                    errorMessage: "Bad Request! It's not possible to change the user name bacause the JWT is invalid."
                 });
 
             }
@@ -130,7 +187,7 @@ class UserCredentialsHandlingController {
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
-                errorMessage: "Unauthorized Request! It's not possible to change some user credential bacause the JWT is invalid."
+                errorMessage: "Unauthorized Request! It's not possible to change the user name bacause the JWT is missing."
             });
 
         }

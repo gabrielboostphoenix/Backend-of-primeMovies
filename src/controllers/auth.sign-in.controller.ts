@@ -43,9 +43,9 @@ class SignInController {
             if (result === null) {
 
                 // Returning an error response
-                return res.status(404).json({
-                    statusCode: 404,
-                    errorMessage: "User account record wasn't found! The e-mail credential is invalid."
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! The user credentials are invalid."
                 });
 
             }
@@ -59,7 +59,7 @@ class SignInController {
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! The password credential is invalid."
+                    errorMessage: "Bad Request! The user credentials are invalid."
                 });
 
             }
@@ -78,9 +78,7 @@ class SignInController {
             });
 
         }
-
     }
-
 }
 
 // Exporting Area
