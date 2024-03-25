@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { credentialsUpdating } from '../types/credentialsUpdating';
 import { changeName, changePassword } from '../services/auth.handle.service';
 import { findUserAccountByEmailCredential, generateAccessToken, verifyThePasswords } from '../services/auth.sign-in.service';
+import { hash } from 'bcryptjs';
 
 // That's a handling class of user credentials
 class UserCredentialsHandlingController {
@@ -28,21 +29,21 @@ class UserCredentialsHandlingController {
                     // Returning an error response
                     return res.status(400).json({
                         statusCode: 400,
-                        errorMessage: "Bad Request! It's not possible to change the user password bacause the JWT is invalid."
+                        errorMessage: "Bad Request! It's not possible to change the user password credential bacause the JWT is invalid."
                     });
 
                 }
 
                 // Checking if the received password credential from the request is correct
-                const comparedPasswords = await verifyThePasswords(password, specificUser.password);
+                const comparedPasswords1 = await verifyThePasswords(password, specificUser.password);
 
                 // Checking the returned operation result
-                if (!comparedPasswords) {
+                if (!comparedPasswords1) {
 
                     // Returning an error response
                     return res.status(400).json({
                         statusCode: 400,
-                        errorMessage: "Bad Request! It's not possible to change the user password bacause the JWT is invalid."
+                        errorMessage: "Bad Request! It's not possible to change the user password credential bacause the JWT is invalid."
                     });
 
                 }
@@ -57,13 +58,32 @@ class UserCredentialsHandlingController {
                     // Returning an error response
                     return res.status(400).json({
                         statusCode: 400,
-                        errorMessage: "Bad Request! The user password information is missing."
+                        errorMessage: "Bad Request! The user password credential is missing."
                     });
 
                 }
 
+                // Checking again if the hashed password credential is the same as the one registered in the database
+                const comparedPasswords2 = await verifyThePasswords(userPassword, specificUser.password);
+
+                // Checking the returned operation result through the data type
+                if (comparedPasswords2) {
+
+                    // Returning na error
+                    return res.status(409).json({
+                        statusCode: 409,
+                        errorMessage: "Bad Request! The user password credential is invalid."
+                    });
+
+                }
+
+                // Extrating the salt number of cryptography
+                const salt = process.env.SALT ? Number(process.env.SALT) : '';
+                // Using a cryptography function to hash the user password
+                const hashedPassword = await hash(userPassword, salt);
+
                 // Changing the user password of your own account
-                const operationResult = await changePassword(email, userPassword);
+                const operationResult = await changePassword(email, hashedPassword);
 
                 // Generating a new JSON Web Token relative to the new user credentials
                 const newAccessToken = await generateAccessToken({
@@ -74,7 +94,7 @@ class UserCredentialsHandlingController {
                 // Returning a successfully response
                 return res.status(200).json({
                     statusCode: 200,
-                    successMessage: "Congratulations! The user password was changed of your own account.",
+                    successMessage: "Congratulations! The user password credential was changed of your own account.",
                     result: operationResult,
                     newJWT: newAccessToken
                 });
@@ -92,14 +112,14 @@ class UserCredentialsHandlingController {
             }
 
         } else {
-            
+
             // In this case the user doesn't have the authorization to access the service
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
                 errorMessage: "Unauthorized Request! It's not possible to change the user password bacause the JWT is missing."
             });
-            
+
         }
 
     };
@@ -148,13 +168,24 @@ class UserCredentialsHandlingController {
                 // Extracting the user name information from the request
                 const { userName } = req.body;
 
-                // Checking if the credential is missing in the request
+                // Checking if the user name information is missing in the request
                 if (userName === "") {
 
                     // Returning an error response
                     return res.status(400).json({
                         statusCode: 400,
-                        errorMessage: "Bad Request! The username information is missing."
+                        errorMessage: "Bad Request! The user name information is missing."
+                    });
+
+                }
+
+                // Checking again if the user name information is the same as the one registered in the database
+                if (userName === specificUser.name) {
+
+                    // Returning na error
+                    return res.status(409).json({
+                        statusCode: 409,
+                        errorMessage: "Bad Request! The user name information is invalid."
                     });
 
                 }
