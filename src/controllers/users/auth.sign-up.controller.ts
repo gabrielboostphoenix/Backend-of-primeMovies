@@ -1,7 +1,7 @@
 // Importing Area
-import { signUp } from '../types/signUp';
+import { signUp } from '../../types/signUp';
 import { Response } from 'express';
-import { createUserAccount, findUserAccountByEmail } from '../services/auth.sign-up.service';
+import { createUserAccount, findUserAccountByEmail } from '../../services/users/auth.sign-up.service';
 import { hash } from 'bcryptjs';
 
 // That's a sign up class

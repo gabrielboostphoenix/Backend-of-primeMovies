@@ -1,8 +1,8 @@
 // Importing Area
-import { foundUser } from '../types/foundUser';
+import { foundUser } from '../../types/foundUser';
 import { compare } from 'bcryptjs';
-import { prisma } from '../../prisma/prismaClient';
-import { payload } from '../types/payload';
+import { prisma } from '../../../prisma/prismaClient';
+import { payload } from '../../types/payload';
 import { sign } from 'jsonwebtoken';
 
 // That's a functionality that checks if exists an user account

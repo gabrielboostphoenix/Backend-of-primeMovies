@@ -1,8 +1,8 @@
 // Importing Area
 import { Response } from 'express';
-import { credentialsUpdating } from '../types/credentialsUpdating';
-import { changeName, changePassword } from '../services/auth.handle.service';
-import { findUserAccountByEmailCredential, generateAccessToken, verifyThePasswords } from '../services/auth.sign-in.service';
+import { credentialsUpdating } from '../../types/credentialsUpdating';
+import { changeName, changePassword } from '../../services/users/auth.handle.service';
+import { findUserAccountByEmailCredential, generateAccessToken, verifyThePasswords } from '../../services/users/auth.sign-in.service';
 import { hash } from 'bcryptjs';
 
 // That's a handling class of user credentials

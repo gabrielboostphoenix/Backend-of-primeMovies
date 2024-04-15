@@ -1,5 +1,5 @@
 // Importing Area
-import { prisma } from '../../prisma/prismaClient';
+import { prisma } from '../../../prisma/prismaClient';
 
 // This is a feature that changes the password credential from the user account
 async function changePassword(userEmail: string, userPassword: string) {

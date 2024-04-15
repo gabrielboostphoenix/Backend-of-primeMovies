@@ -1,8 +1,8 @@
 // Importing Area
-import { userCredentials } from '../types/userCredentials';
-import { foundUser } from '../types/foundUser';
-import { createdUser } from '../types/createdUser';
-import { prisma } from '../../prisma/prismaClient';
+import { userCredentials } from '../../types/userCredentials';
+import { foundUser } from '../../types/foundUser';
+import { createdUser } from '../../types/createdUser';
+import { prisma } from '../../../prisma/prismaClient';
 
 // That's a functionality that checks if exists the user account in the database
 async function findUserAccountByEmail(data: string): Promise <foundUser | null> {

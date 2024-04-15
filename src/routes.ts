@@ -1,8 +1,8 @@
 // Importing Area
 import { Router } from 'express';
-import { SignUpController } from './controllers/auth.sign-up.controller';
-import { SignInController } from './controllers/auth.sign-in.controller';
-import { UserCredentialsHandlingController } from './controllers/auth.handle.controller';
+import { SignUpController } from './controllers/users/auth.sign-up.controller';
+import { SignInController } from './controllers/users/auth.sign-in.controller';
+import { UserCredentialsHandlingController } from './controllers/users/auth.handle.controller';
 import { checkIfTheUserIsAuthenticated } from './middleware/isAuthenticated';
 
 // Declaring the constant that will be used to run the router

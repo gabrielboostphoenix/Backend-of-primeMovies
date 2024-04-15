@@ -1,7 +1,7 @@
 // Importing Area
-import { signIn } from '../types/signIn';
+import { signIn } from '../../types/signIn';
 import { Response } from 'express';
-import { findUserAccountByEmailCredential, verifyThePasswords, generateAccessToken } from '../services/auth.sign-in.service';
+import { findUserAccountByEmailCredential, verifyThePasswords, generateAccessToken } from '../../services/users/auth.sign-in.service';
 
 // That's a sign-in class
 class SignInController {
