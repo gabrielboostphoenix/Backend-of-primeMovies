@@ -53,6 +53,14 @@ class SignInController {
                     successMessage: "Congratulations! The client was loged with successfully in the user account."
                 });
 
+            } else {
+
+                // Returning an error response
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! It's not possible to log-in the user account bacause the JWT is invalid."
+                });
+
             }
 
         } else {

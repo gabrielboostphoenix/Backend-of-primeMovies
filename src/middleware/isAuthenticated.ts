@@ -1,7 +1,7 @@
 // Importing Area
 import { Response, NextFunction } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
-import { userRequest } from '../types/userRequest';
+import { middlewareRequest } from '../types/middlewareRequest';
 import { authorized } from '../types/authorized';
 import { unauthorized } from '../types/unauthorized';
 
@@ -37,7 +37,7 @@ const verifyAccessToken = async (token: string): Promise <authorized | unauthori
 };
 
 // That's a middleware that checks if exists the JWT in the request
-const checkIfTheUserIsAuthenticated = async (req: userRequest, res: Response, next: NextFunction) => {
+const checkIfTheUserIsAuthenticated = async (req: middlewareRequest, res: Response, next: NextFunction) => {
 
     // Getting all of the authorization informations from request header
     const authHeader = req.headers.authorization;
