@@ -7,7 +7,6 @@ interface middlewareRequest extends Request {
     userName?: string,
     userEmail?: string,
     userPassword?: string,
-    userID?: string,
     movieID?: number,
     movieName?: string,
     jwtAuthorization?: string | JwtPayload

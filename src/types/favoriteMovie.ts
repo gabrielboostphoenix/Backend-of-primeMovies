@@ -7,7 +7,6 @@ import { unauthorized } from './unauthorized';
 interface favoriteMovie extends Request {
     movieID?: number,
     movieName?: string,
-    userID?: string,
     jwtAuthorization?: authorized | unauthorized
 }
 
