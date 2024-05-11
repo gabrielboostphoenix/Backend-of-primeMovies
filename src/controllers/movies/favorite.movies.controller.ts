@@ -1,7 +1,7 @@
 // Importing Area
 import { Response } from "express";
-import { movieRequest } from '../../types/movieRequest';
 import { findUserAccountByEmail, findFavoriteMovie, addFavoriteMovie } from '../../services/movies/movie.adding.service';
+import { removeFavoriteMovie } from '../../services/movies/movie.removing.service';
 import { favoriteMovie } from "../../types/favoriteMovie";
 
 // That's a favorite movies class
@@ -78,7 +78,72 @@ class FavoriteMoviesController {
     }
 
     // This method removes a movie in the favorite list
-    async removeMovie(req: movieRequest, res: Response) {
+    async removeMovie(req: favoriteMovie, res: Response) {
+
+        // Checking for an existing JWT
+        if (req.jwtAuthorization?.success === true) {
+
+            // Extracting the user informations from the request
+            const { movieID, movieName } = req.body;
+
+            // Checking if it's missing some information property in the request
+            if (typeof movieID === 'undefined' || typeof movieName === 'undefined') {
+
+                // Returning an error response
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! It's missing some information properties."
+                });
+
+            }
+
+            // Searching for specific user register in the database
+            const specificUser = await findUserAccountByEmail(req.jwtAuthorization.data.email);
+
+            // Checking whether the user exists through the operation result
+            if (specificUser === null) {
+
+                // Returning an error response
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! The user informations are invalid so try again too later."
+                });
+
+            }
+
+            // Checking if the user's favorite movie already exists registered in the database
+            const registeredMovie = await findFavoriteMovie(movieID, movieName, specificUser.id);
+
+            // Checking the returned data in the operation result
+            if (registeredMovie === null) {
+
+                // Returning an error message
+                return res.status(409).json({
+                    statusCode: 404,
+                    errorMessage: "The favorite movie wasn't found in your list so it's not possible to remove it!"
+                });
+
+            }
+
+            // Removing the favorite movie of the user list
+            const removedMovie = await removeFavoriteMovie(movieID, specificUser.id, movieName);
+
+            // Returning the operation result
+            return res.status(200).json({
+                statusCode: 200,
+                successMessage: "The favorite movie was removed with successfully of your list!",
+                result: removedMovie
+            });
+
+        } else {
+
+            // Returning an error response
+            return res.status(401).json({
+                statusCode: 401,
+                errorMessage: `Unauthorized Request! ${req.jwtAuthorization?.errorMessage}`
+            });
+
+        }
 
     }
 

@@ -18,6 +18,9 @@ router.post('/signin', checkIfTheUserIsAuthenticated, new SignInController().sig
 // That's the movie adding route where the user can add the favorite movie in your list
 router.post('/favoriteMovies/add', checkIfTheUserIsAuthenticated, new FavoriteMoviesController().addMovie);
 
+// That's the movie removing route where the user can remove the favorite movie in your list
+router.delete('/favoriteMovies/remove', checkIfTheUserIsAuthenticated, new FavoriteMoviesController().removeMovie);
+
 // That's the user credentials handling route where the user can change own account name
 router.patch('/userCredentials/name', checkIfTheUserIsAuthenticated, new UserCredentialsHandlingController().handleName);
 
