@@ -3,6 +3,7 @@ import { Response } from "express";
 import { findUserAccountByEmail, findFavoriteMovie, addFavoriteMovie } from '../../services/movies/movie.adding.service';
 import { removeFavoriteMovie } from '../../services/movies/movie.removing.service';
 import { favoriteMovie } from "../../types/favoriteMovie";
+import { searchFavoriteMovie } from "../../services/movies/movie.request.service";
 
 // That's a favorite movies class
 class FavoriteMoviesController {
@@ -14,15 +15,15 @@ class FavoriteMoviesController {
         if (req.jwtAuthorization?.success === true) {
 
             // Extracting the user information from request
-            const { movieID, movieName } = req.body;
+            const { movieID } = req.body;
 
             // Checking if the properties is missing in the request
-            if (typeof movieID === 'undefined' || typeof movieName === 'undefined') {
+            if (typeof movieID === 'undefined') {
 
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! It's missing some information properties."
+                    errorMessage: "Bad Request! It's missing the movie ID information properties."
                 });
 
             }
@@ -41,8 +42,25 @@ class FavoriteMoviesController {
 
             }
 
+
+            // Checking if exists the user favorite movie
+            try {
+
+                // Searching for favorite movie by your ID in the API
+                const validMovie = await searchFavoriteMovie(movieID);
+
+            } catch (error) {
+
+                // Returning an error message
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! That's an invalid movie because doesn't exists in our systems."
+                });
+
+            }
+
             // Checking if the user's favorite movie already exists registered in the database
-            const registeredMovie = await findFavoriteMovie(movieID, movieName, specificUser.id);
+            const registeredMovie = await findFavoriteMovie(movieID, specificUser.id);
 
             // Checking the returned data in the operation result
             if (registeredMovie !== null) {
@@ -56,7 +74,7 @@ class FavoriteMoviesController {
             }
 
             // Adding the user's favorite movie in the database
-            const addedMovie = await addFavoriteMovie(movieID, movieName, specificUser.id);
+            const addedMovie = await addFavoriteMovie(movieID, specificUser.id);
 
             // Returning the operation result
             return res.status(200).json({
@@ -84,15 +102,15 @@ class FavoriteMoviesController {
         if (req.jwtAuthorization?.success === true) {
 
             // Extracting the user informations from the request
-            const { movieID, movieName } = req.body;
+            const { movieID } = req.body;
 
-            // Checking if it's missing some information property in the request
-            if (typeof movieID === 'undefined' || typeof movieName === 'undefined') {
+            // Checking if it's missing the movie ID information property in the request
+            if (typeof movieID === 'undefined') {
 
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! It's missing some information properties."
+                    errorMessage: "Bad Request! It's missing the movie iD information property."
                 });
 
             }
@@ -112,7 +130,7 @@ class FavoriteMoviesController {
             }
 
             // Checking if the user's favorite movie already exists registered in the database
-            const registeredMovie = await findFavoriteMovie(movieID, movieName, specificUser.id);
+            const registeredMovie = await findFavoriteMovie(movieID, specificUser.id);
 
             // Checking the returned data in the operation result
             if (registeredMovie === null) {
@@ -126,7 +144,7 @@ class FavoriteMoviesController {
             }
 
             // Removing the favorite movie of the user list
-            const removedMovie = await removeFavoriteMovie(movieID, specificUser.id, movieName);
+            const removedMovie = await removeFavoriteMovie(movieID, specificUser.id);
 
             // Returning the operation result
             return res.status(200).json({

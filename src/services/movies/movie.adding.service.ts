@@ -20,13 +20,12 @@ async function findUserAccountByEmail(email: string): Promise <foundUser | null>
 }
 
 // That's a functionality that finds a favorite movie already registered in the database
-async function findFavoriteMovie(movieID: number, movieName: string, userID: string): Promise <foundMovie | null> {
+async function findFavoriteMovie(movieID: number, userID: string): Promise <foundMovie | null> {
 
     // Searching if exists the user's favorite movie in the database
     const operationResult = await prisma.movies.findFirst({
         where: {
             id: movieID,
-            name: movieName,
             userID: userID
         }
     });
@@ -37,13 +36,12 @@ async function findFavoriteMovie(movieID: number, movieName: string, userID: str
 }
 
 // That's a functionality that adds the favorite movie in the database
-async function addFavoriteMovie(movieID: number, movieName: string, userID: string): Promise <movie> {
+async function addFavoriteMovie(movieID: number, userID: string): Promise <movie> {
 
     // Adding a specific movie in the favorite movies list
     const operationResult = await prisma.movies.create({
         data: {
             id: movieID,
-            name: movieName,
             userID: userID
         }
     });
