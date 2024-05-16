@@ -18,7 +18,8 @@ class UserCredentialsHandlingController {
             const { email, password } = req.jwtAuthorization.data;
 
             // Verifing if there are properties like e-mail and password in the token
-            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+            if (typeof email !== 'undefined' && email !== "" &&
+                typeof password !== 'undefined' && password !== "") {
 
                 // Searching for the user in the database with your respective received credentials
                 const specificUser = await findUserAccountByEmailCredential(email);
@@ -53,7 +54,7 @@ class UserCredentialsHandlingController {
                 const { userPassword } = req.body;
 
                 // Checking if the credential is missing in the request
-                if (userPassword === "") {
+                if (userPassword === "" || typeof userPassword === "undefined") {
 
                     // Returning an error response
                     return res.status(400).json({
@@ -96,13 +97,12 @@ class UserCredentialsHandlingController {
                 return res.status(200).json({
                     statusCode: 200,
                     successMessage: "Congratulations! The user password credential was changed of your own account.",
-                    result: operationResult,
                     newJWT: newAccessToken
                 });
 
             } else {
 
-                // In this case the user doesn't have authorization to access the service
+                // In this case the user doesn't have the authorization to access the service
                 // It's because was send an invalid JWT where is missing some properties
                 // Returning an error response
                 return res.status(400).json({
@@ -135,7 +135,8 @@ class UserCredentialsHandlingController {
             const { email, password } = req.jwtAuthorization.data;
 
             // Checking if the user credentials are invalid through the data type
-            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+            if (typeof email !== 'undefined' && email !== "" &&
+                typeof password !== 'undefined' && password !== "") {
 
                 // Searching for the user in the database with your respective received credentials
                 const specificUser = await findUserAccountByEmailCredential(email);
@@ -170,7 +171,7 @@ class UserCredentialsHandlingController {
                 const { userName } = req.body;
 
                 // Checking if the user name information is missing in the request
-                if (userName === "") {
+                if (userName === "" || typeof userName === 'undefined') {
 
                     // Returning an error response
                     return res.status(400).json({
@@ -197,8 +198,7 @@ class UserCredentialsHandlingController {
                 // Returning a successfully response
                 return res.status(200).json({
                     statusCode: 200,
-                    successMessage: "Congratulations! The user name was changed of your own account.",
-                    result: operationResult
+                    successMessage: "Congratulations! The user name was changed of your own account."
                 });
 
             } else {

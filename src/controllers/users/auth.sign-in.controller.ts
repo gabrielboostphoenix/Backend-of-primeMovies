@@ -16,7 +16,8 @@ class SignInController {
             const { email, password } = req.jwtAuthorization.data;
 
             // Verifing if there are properties like e-mail and password in the token
-            if (typeof email !== 'undefined' && typeof password !== 'undefined') {
+            if (typeof email !== 'undefined' && typeof password !== 'undefined' &&
+                email !== "" && password !== "") {
 
                 // Searching for the user in the database with your respective received credentials
                 const specificUser = await findUserAccountByEmailCredential(email);
@@ -65,12 +66,13 @@ class SignInController {
 
         } else {
 
-            // In this case the user doesn't authorization to access the service
+            // In this case the user doesn't have the authorization to access the service
             // Extrating the informations from request
             const { userEmail, userPassword } = req.body;
 
             // Checking if the user credentials are missing in the request
-            if (userEmail === "" || userPassword === "") {
+            if (typeof userEmail === 'undefined' || userEmail === "" ||
+                typeof userPassword === 'undefined' || userPassword === "") {
 
                 // Returning an error response
                 return res.status(400).json({

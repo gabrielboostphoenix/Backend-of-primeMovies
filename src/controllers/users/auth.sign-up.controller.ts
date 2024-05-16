@@ -27,7 +27,9 @@ class SignUpController {
             const { userName, userEmail, userPassword } = req.body;
             
             // Checking if the credentials are missing in the request
-            if (userName === "" || userEmail === "" || userPassword === "") {
+            if (typeof userName === 'undefined' || userName === "" ||
+                typeof userEmail === 'undefined' || userEmail === "" ||
+                typeof userPassword === 'undefined' || userPassword === "") {
 
                 // Returning an error response
                 return res.status(400).json({
@@ -67,8 +69,7 @@ class SignUpController {
             // Returning the operation result with a created user successfully response
             return res.status(201).json({
                 statusCode: 201,
-                successMessage: 'Your own user account was created with successfully!',
-                operationResult: result
+                successMessage: 'Your own user account was created with successfully!'
             });
 
         }

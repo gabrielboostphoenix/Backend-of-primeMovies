@@ -14,11 +14,12 @@ class FavoriteMoviesController {
         // Checking for an existing JWT
         if (req.jwtAuthorization?.success === true) {
 
+            // In this case the user has authorization to access the service
             // Extracting the user information from request
             const { movieID } = req.body;
 
             // Checking if the properties is missing in the request
-            if (typeof movieID === 'undefined') {
+            if (typeof movieID === 'undefined' || movieID === "") {
 
                 // Returning an error response
                 return res.status(400).json({
@@ -79,12 +80,12 @@ class FavoriteMoviesController {
             // Returning the operation result
             return res.status(200).json({
                 statusCode: 200,
-                successMessage: "The favorite movie has been added in the list with successfully!",
-                result: addedMovie
+                successMessage: "The favorite movie has been added in the list with successfully!"
             });
 
         } else {
 
+            // In this case the user doesn't have the authorization to access the service
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
@@ -101,16 +102,17 @@ class FavoriteMoviesController {
         // Checking for an existing JWT
         if (req.jwtAuthorization?.success === true) {
 
+            // In this case the user has authorization to access the service
             // Extracting the user informations from the request
             const { movieID } = req.body;
 
             // Checking if it's missing the movie ID information property in the request
-            if (typeof movieID === 'undefined') {
+            if (typeof movieID === 'undefined' || movieID === "") {
 
                 // Returning an error response
                 return res.status(400).json({
                     statusCode: 400,
-                    errorMessage: "Bad Request! It's missing the movie iD information property."
+                    errorMessage: "Bad Request! It's missing the movie ID information property."
                 });
 
             }
@@ -144,17 +146,17 @@ class FavoriteMoviesController {
             }
 
             // Removing the favorite movie of the user list
-            const removedMovie = await removeFavoriteMovie(movieID, specificUser.id);
+            await removeFavoriteMovie(movieID, specificUser.id);
 
             // Returning the operation result
             return res.status(200).json({
                 statusCode: 200,
-                successMessage: "The favorite movie was removed with successfully of your list!",
-                result: removedMovie
+                successMessage: "The favorite movie was removed with successfully of your list!"
             });
 
         } else {
 
+            // In this case the user doesn't have the authorization to access the service
             // Returning an error response
             return res.status(401).json({
                 statusCode: 401,
