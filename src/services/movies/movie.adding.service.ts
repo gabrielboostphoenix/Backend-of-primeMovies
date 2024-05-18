@@ -1,18 +1,30 @@
 // Importing Area
+import { compare } from 'bcryptjs';
 import { prisma } from '../../../prisma/prismaClient';
 import { foundMovie } from '../../types/foundMovie';
 import { foundUser } from '../../types/foundUser';
 import { movie } from '../../types/movie';
 
 // That's a functionality that finds an user account by ID
-async function findUserAccountByEmail(email: string): Promise <foundUser | null> {
+async function findUserAccountByEmailCredential(email: string): Promise <foundUser | null> {
 
     // Searching if exists the user account
-    const operationResult = await prisma.users.findFirst({
+    const operationResult = await prisma.users.findUnique({
         where: {
             email: email
         }
     });
+
+    // Returning the operation result
+    return operationResult;
+
+}
+
+// That's a functionality that compares the passwords if it's equal
+async function comparePasswords(requestPassword: string, databasePassword: string) {
+
+    // Comparing the both passwords
+    const operationResult = await compare(requestPassword, databasePassword);
 
     // Returning the operation result
     return operationResult;
@@ -52,4 +64,4 @@ async function addFavoriteMovie(movieID: number, userID: string): Promise <movie
 }
 
 // Exporting Area
-export { findUserAccountByEmail, findFavoriteMovie, addFavoriteMovie };
+export { findUserAccountByEmailCredential, comparePasswords, findFavoriteMovie, addFavoriteMovie };

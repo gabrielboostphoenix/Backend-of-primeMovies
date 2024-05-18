@@ -1,6 +1,6 @@
 // Importing Area
 import { Response } from "express";
-import { findUserAccountByEmail, findFavoriteMovie, addFavoriteMovie } from '../../services/movies/movie.adding.service';
+import { findUserAccountByEmailCredential, comparePasswords, findFavoriteMovie, addFavoriteMovie } from '../../services/movies/movie.adding.service';
 import { removeFavoriteMovie } from '../../services/movies/movie.removing.service';
 import { favoriteMovie } from "../../types/favoriteMovie";
 import { searchFavoriteMovie } from "../../services/movies/movie.request.service";
@@ -17,6 +17,7 @@ class FavoriteMoviesController {
             // In this case the user has authorization to access the service
             // Extracting the user information from request
             const { movieID } = req.body;
+            const { email, password } = req.jwtAuthorization.data;
 
             // Checking if the properties is missing in the request
             if (typeof movieID === 'undefined' || movieID === "") {
@@ -30,7 +31,7 @@ class FavoriteMoviesController {
             }
 
             // Searching for specific user register in the database
-            const specificUser = await findUserAccountByEmail(req.jwtAuthorization.data.email);
+            const specificUser = await findUserAccountByEmailCredential(email);
 
             // Checking whether the user exists through the operation result
             if (specificUser === null) {
@@ -43,6 +44,19 @@ class FavoriteMoviesController {
 
             }
 
+            // Checking if the received password from the request is correct
+            const comparedPasswords = await comparePasswords(password, specificUser.password);
+
+            // Checking the returned operation result
+            if (!comparedPasswords) {
+
+                // Returning an error response
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! The user informations are invalid so try again too later."
+                });
+
+            }
 
             // Checking if exists the user favorite movie
             try {
@@ -105,6 +119,7 @@ class FavoriteMoviesController {
             // In this case the user has authorization to access the service
             // Extracting the user informations from the request
             const { movieID } = req.body;
+            const { email, password } = req.jwtAuthorization.data;
 
             // Checking if it's missing the movie ID information property in the request
             if (typeof movieID === 'undefined' || movieID === "") {
@@ -118,10 +133,24 @@ class FavoriteMoviesController {
             }
 
             // Searching for specific user register in the database
-            const specificUser = await findUserAccountByEmail(req.jwtAuthorization.data.email);
+            const specificUser = await findUserAccountByEmailCredential(email);
 
             // Checking whether the user exists through the operation result
             if (specificUser === null) {
+
+                // Returning an error response
+                return res.status(400).json({
+                    statusCode: 400,
+                    errorMessage: "Bad Request! The user informations are invalid so try again too later."
+                });
+
+            }
+
+            // Checking if the received password from the request is correct
+            const comparedPasswords = await comparePasswords(password, specificUser.password);
+
+            // Checking the returned operation result
+            if (!comparedPasswords) {
 
                 // Returning an error response
                 return res.status(400).json({

@@ -113,8 +113,7 @@ class SignInController {
             // Generating a JWT where isn't necessary to log-in the next time
             const accessWebToken = await generateAccessToken({
                 email: userEmail,
-                password: userPassword,
-                userID: result.id
+                password: userPassword
             });
 
             // Returning a successfully response

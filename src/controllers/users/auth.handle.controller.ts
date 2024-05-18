@@ -89,8 +89,7 @@ class UserCredentialsHandlingController {
                 // Generating a new JSON Web Token relative to the new user credentials
                 const newAccessToken = await generateAccessToken({
                     email: operationResult.email,
-                    password: operationResult.password,
-                    userID: operationResult.id
+                    password: operationResult.password
                 });
 
                 // Returning a successfully response
