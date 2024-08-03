@@ -1,4 +1,4 @@
-// This is the created user type
+// That's a type of created user
 interface createdUser {
     name: string,
     email: string,

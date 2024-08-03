@@ -1,4 +1,4 @@
-// This is the user credentials type
+// That's a type of user credentials
 interface userCredentials {
     userName: string,
     userEmail: string,

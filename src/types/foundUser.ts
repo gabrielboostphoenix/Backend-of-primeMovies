@@ -1,4 +1,4 @@
-// That's a found user's type
+// That's a type of found user
 interface foundUser {
     id: string;
     email: string;
